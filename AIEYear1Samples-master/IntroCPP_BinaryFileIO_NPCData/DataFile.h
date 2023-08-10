@@ -17,8 +17,8 @@ public:
 
 private:
 	int recordCount;
-	std::vector<Record*> records;	// delete this vector. Load only the required record 
-
+	std::vector<int> recordPositions;	// ZORA: Each integer measures the distance (in binary characters) from the start of the file to each record
+	Record* currentRecord;
 
 
 public:
@@ -26,15 +26,12 @@ public:
 	~DataFile();
 
 	void AddRecord(string imageFilename, string name, int age);
-	Record* GetRecord(int index);
+	Record* GetRecord(const char* file, int index);
 
 	int GetRecordCount() { return recordCount; };
 
 	void Save(string filename);
 	void Load(string filename);
-
-private:
-	void Clear();
-
+	void Load(string filename, int searchIndex);
 };
 

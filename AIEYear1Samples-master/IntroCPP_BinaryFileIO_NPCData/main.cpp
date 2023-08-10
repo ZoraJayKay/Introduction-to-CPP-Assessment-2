@@ -21,6 +21,7 @@
 
 #include "raylib.h"
 #include "DataFile.h"
+#include <iostream>
 
 int main(int argc, char* argv[])
 {
@@ -33,13 +34,14 @@ int main(int argc, char* argv[])
 
     DataFile data;
     int currentRecordIdx = 0;
+    const char* fileName = "npc_data.dat";
 
     // ZORA: This is the name of the binary data file holding NPC info
-    data.Load("npc_data.dat");
-
-    DataFile::Record* currentRecord = data.GetRecord(currentRecordIdx);
+    data.Load(fileName);
+    // ZORA: The Record to be retrieved as a result of left/right arrow keystrokes (starts on 1st NPC in the file)
+    DataFile::Record* currentRecord = data.GetRecord(fileName, currentRecordIdx);
+    // ZORA: The texture of the Record to be retrieved
     Texture2D recordTexture = LoadTextureFromImage(currentRecord->image);
-
 
     SetTargetFPS(60);
     //--------------------------------------------------------------------------------------
@@ -54,24 +56,35 @@ int main(int argc, char* argv[])
 
         if (IsKeyPressed(KEY_LEFT))
         {
-            currentRecordIdx--;
-            if (currentRecordIdx < 0)
+            if (currentRecordIdx > 0)
             {
+                currentRecordIdx--;
+                UnloadTexture(recordTexture);
+                currentRecord = data.GetRecord(fileName, currentRecordIdx);
+                recordTexture = LoadTextureFromImage(currentRecord->image);
+                
+            }
+            
+            else {
                 currentRecordIdx = 0;
             }
-            currentRecord = data.GetRecord(currentRecordIdx);
-            recordTexture = LoadTextureFromImage(currentRecord->image);
         }
 
         if (IsKeyPressed(KEY_RIGHT))
         {
             currentRecordIdx++;
-            if (currentRecordIdx >= data.GetRecordCount())
-            {
-                currentRecordIdx = data.GetRecordCount();
-            }            
-            currentRecord = data.GetRecord(currentRecordIdx);
-            recordTexture = LoadTextureFromImage(currentRecord->image);
+
+            if (currentRecordIdx < data.GetRecordCount())
+            {                
+                UnloadTexture(recordTexture);
+                currentRecord = data.GetRecord(fileName, currentRecordIdx);
+                recordTexture = LoadTextureFromImage(currentRecord->image);
+            }
+
+            else {
+                currentRecordIdx = data.GetRecordCount() - 1;
+                currentRecord = data.GetRecord(fileName, currentRecordIdx);
+            }
         }
 
 
