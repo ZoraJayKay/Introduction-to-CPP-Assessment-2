@@ -56,15 +56,21 @@ int main(int argc, char* argv[])
 
         if (IsKeyPressed(KEY_LEFT))
         {
+            // So long as pressing left doesn't move beyond the beginning of the records, view the previous entry
             if (currentRecordIdx > 0)
             {
+                // Decrement the record counter
                 currentRecordIdx--;
+                // Unload the texture of the most recent NPC
                 UnloadTexture(recordTexture);
+                // Refresh the current record with the particulars of the new one to be viewed
                 currentRecord = data.GetRecord(fileName, currentRecordIdx);
+                // Load the texture of the new NPCV
                 recordTexture = LoadTextureFromImage(currentRecord->image);
                 
             }
             
+            // If pressing left would move beyond the beginning of the records, view the first entry
             else {
                 currentRecordIdx = 0;
             }
@@ -72,15 +78,16 @@ int main(int argc, char* argv[])
 
         if (IsKeyPressed(KEY_RIGHT))
         {
-            currentRecordIdx++;
-
-            if (currentRecordIdx < data.GetRecordCount())
-            {                
+            // So long as pressing right doesn't move beyond the end of the records, view the next entry
+            if (currentRecordIdx +1 < data.GetRecordCount())
+            { 
+                currentRecordIdx++;
                 UnloadTexture(recordTexture);
                 currentRecord = data.GetRecord(fileName, currentRecordIdx);
                 recordTexture = LoadTextureFromImage(currentRecord->image);
             }
 
+            // If pressing right would move beyond the end of the records, view the last entry
             else {
                 currentRecordIdx = data.GetRecordCount() - 1;
                 currentRecord = data.GetRecord(fileName, currentRecordIdx);

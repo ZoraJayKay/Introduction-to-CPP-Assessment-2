@@ -15,19 +15,6 @@ DataFile::~DataFile()
 	currentRecord = nullptr;
 }
 
-//void DataFile::AddRecord(string imageFilename, string name, int age)
-//{
-//	Image i = LoadImage(imageFilename.c_str());
-//
-//	Record* r = new Record;
-//	r->image = i;
-//	r->name = name;
-//	r->age = age;
-//
-//	records.push_back(r);
-//	recordCount++;
-//}
-
 DataFile::Record* DataFile::GetRecord(const char* file, int index)
 {
 	// ZORA: Load the record at the index from the nominated file into the current record
@@ -35,7 +22,8 @@ DataFile::Record* DataFile::GetRecord(const char* file, int index)
 	return currentRecord;
 }
 
-// +++++++++++++++++++++++ ZORA: I didn't update the save function as it didn't seem to be in the scope of the assessment
+// +++++++++++++++++++++++ ZORA: I commented the functions of the code as it was written, but I didn't update the save function as it didn't seem to be in the scope of the assessment and wasn't needed in order to accomplish the tasks
+
 //void DataFile::Save(string filename)
 //{
 //	// ZORA: Open a file (whose name is the parameter passed in) for streaming binary data (WRITE)
@@ -171,10 +159,6 @@ void DataFile::Load(string filename)
 			name = nullptr;
 		}
 	}
-
-	else {
-		// ZORA: What should I do if it fails to load?
-	}	
 
 	infile.close();
 }
