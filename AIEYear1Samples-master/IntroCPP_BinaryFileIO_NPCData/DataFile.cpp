@@ -4,18 +4,11 @@
 
 using namespace std;
 
-DataFile::DataFile()
-{
-	currentRecord = new Record;
-}
+DataFile::DataFile() {recordCount = 0;}
 
-DataFile::~DataFile()
-{
-	delete currentRecord;
-	currentRecord = nullptr;
-}
+DataFile::~DataFile(){}
 
-DataFile::Record* DataFile::GetRecord(const char* file, int index)
+DataFile::Record DataFile::GetRecord(const char* file, int index)
 {
 	// ZORA: Load the record at the index from the nominated file into the current record
 	Load(file, recordPositions[index]);
@@ -74,9 +67,6 @@ DataFile::Record* DataFile::GetRecord(const char* file, int index)
 //			outfile.write((char*)&records[i]->age, ageSize);
 //		}
 //	}
-//	else{
-//		// ZORA: What should I do if it fails to load?
-//	}
 //	
 //	outfile.close();
 //}
@@ -130,9 +120,6 @@ void DataFile::Load(string filename)
 			// Read all of the characters from this Record's NPC Image and copy them to the dynamic array.
 			infile.read(imgdata, imageSize);
 
-			// Create a new RayLib Image and populate it with the colour data of the NPC Image from the binary file.
-			//Image img = LoadImageEx((Color*)imgdata, width, height);
-
 			// ZORA: Create a pointer to a dynamic array of characters which will hold the name data of the NPC. The dynamic array's size is equal to the number of characters in the name of this Record, expressed as an integer.
 			// THIS NEEDS TO HAVE A NULL POINTER ON THE END BECAUSE OTHERWISE IT WILL CONTINUE TO READ UNTIL ONE IS FOUND
 			char* name = new char[nameSize + 1];
@@ -145,17 +132,12 @@ void DataFile::Load(string filename)
 			infile.read((char*)name, nameSize);
 			infile.read((char*)&age, ageSize);
 
-			// ZORA: Record the current position in the file (as at the time of reaching the end of the record) as an integer
-			//recordPositions.push_back(infile.tellg());
-
 			// ZORA: Delete pointer to the dynamic array of characters that holds NPC colour data
 			delete[] imgdata;
-			// ZORA ---> ADDED null pointer instruction
 			imgdata = nullptr;
 
 			// ZORA: Delete pointer to the dynamic array of characters that holds NPC name data
 			delete[] name;
-			// ZORA ---> ADDED null pointer instruction
 			name = nullptr;
 		}
 	}
@@ -220,9 +202,9 @@ void DataFile::Load(string filename, int searchIndex)
 		infile.read((char*)&age, ageSize);
 
 		// ZORA: Set the particulars of the 'current record' as being equal to those found in this record
-		currentRecord->image = img;
-		currentRecord->name = string(name);
-		currentRecord->age = age;
+		currentRecord.image = img;
+		currentRecord.name = string(name);
+		currentRecord.age = age;
 
 		// ZORA: Delete pointer to the dynamic array of characters that holds NPC colour data
 		delete[] imgdata;
@@ -233,10 +215,6 @@ void DataFile::Load(string filename, int searchIndex)
 		delete[] name;
 		// ZORA ---> ADDED null pointer instruction
 		name = nullptr;
-	}
-
-	else {
-		// ZORA: What should I do if it fails to load?
 	}
 
 	infile.close();

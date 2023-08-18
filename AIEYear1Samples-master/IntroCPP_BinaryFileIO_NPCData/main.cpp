@@ -20,6 +20,7 @@
 ********************************************************************************************/
 
 #include "raylib.h"
+#include "memory.h"
 #include "DataFile.h"
 #include <iostream>
 
@@ -30,7 +31,7 @@ int main(int argc, char* argv[])
     int screenWidth = 800;
     int screenHeight = 450;
 
-    InitWindow(screenWidth, screenHeight, "raylib [core] example - basic window");
+    InitWindow(screenWidth, screenHeight, "Zora Jane Kerr: Introduction to C++ (Assessment Task 2 - Debugging Problems) AIE, 2023 (student year 1)");
 
     DataFile data;
     int currentRecordIdx = 0;
@@ -39,9 +40,9 @@ int main(int argc, char* argv[])
     // ZORA: This is the name of the binary data file holding NPC info
     data.Load(fileName);
     // ZORA: The Record to be retrieved as a result of left/right arrow keystrokes (starts on 1st NPC in the file)
-    DataFile::Record* currentRecord = data.GetRecord(fileName, currentRecordIdx);
+    DataFile::Record currentRecord = data.GetRecord(fileName, currentRecordIdx);
     // ZORA: The texture of the Record to be retrieved
-    Texture2D recordTexture = LoadTextureFromImage(currentRecord->image);
+    Texture2D recordTexture = LoadTextureFromImage(currentRecord.image);
 
     SetTargetFPS(60);
     //--------------------------------------------------------------------------------------
@@ -66,11 +67,10 @@ int main(int argc, char* argv[])
                 // Refresh the current record with the particulars of the new one to be viewed
                 currentRecord = data.GetRecord(fileName, currentRecordIdx);
                 // Load the texture of the new NPCV
-                recordTexture = LoadTextureFromImage(currentRecord->image);
-                
+                recordTexture = LoadTextureFromImage(currentRecord.image);
             }
             
-            // If pressing left would move beyond the beginning of the records, view the first entry
+            // If pressing left would move beyond the beginning of the records, do nothing
             else {
                 currentRecordIdx = 0;
             }
@@ -84,13 +84,13 @@ int main(int argc, char* argv[])
                 currentRecordIdx++;
                 UnloadTexture(recordTexture);
                 currentRecord = data.GetRecord(fileName, currentRecordIdx);
-                recordTexture = LoadTextureFromImage(currentRecord->image);
+                recordTexture = LoadTextureFromImage(currentRecord.image);
             }
 
-            // If pressing right would move beyond the end of the records, view the last entry
+            // If pressing right would move beyond the end of the records, do nothing
             else {
                 currentRecordIdx = data.GetRecordCount() - 1;
-                currentRecord = data.GetRecord(fileName, currentRecordIdx);
+                //currentRecord = data.GetRecord(fileName, currentRecordIdx);*/
             }
         }
 
@@ -104,14 +104,16 @@ int main(int argc, char* argv[])
         DrawTexture(recordTexture, 300, 50, WHITE);
 
         DrawText("NAME", 10, 50, 20, LIGHTGRAY);
-        DrawText(currentRecord->name.c_str(), 10, 80, 20, LIGHTGRAY);
+        DrawText(currentRecord.name.c_str(), 10, 80, 20, LIGHTGRAY);
 
         DrawText("AGE", 10, 120, 20, LIGHTGRAY);
-        DrawText(to_string(currentRecord->age).c_str(), 10, 150, 20, LIGHTGRAY);
+        DrawText(to_string(currentRecord.age).c_str(), 10, 150, 20, LIGHTGRAY);
 
         EndDrawing();
         //----------------------------------------------------------------------------------
     }
+
+    UnloadTexture(recordTexture);
 
     // De-Initialization
     //--------------------------------------------------------------------------------------   
